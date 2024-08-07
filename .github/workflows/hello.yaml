@@ -1,8 +1,53 @@
+# name: Hello                         # ワークフロー名
+# on: push                            # イベント(プッシュ時に起動)
+# jobs:                               # ジョブの定義
+#   hello:                            # ジョブID
+#     runs-on: ubuntu-latest          # ランナー(ubuntuで実行します)
+#     steps:                          # ステップの定義
+#       - run: echo "Hello World!"    # シェルコマンドの実行
+#       - uses: actions/checkout@v4   # アクションの呼び出し$?
+
+# name: Context
+# on: push
+# jobs:
+#   print:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - run: echo "${{ github.actor}}"
+
+
+# コンテキストを直接シェルコマンドに入れるのはアンチパターンなので中間環境変数を利用することでトークン分割やパス展開が防げる
+# name: Interdiate envioronment variablees
+# on: push
+# jobs:
+#   print:
+#     runs-on: ubuntu-latest
+#     env:
+#       ACTOR: ${{ github.actor}}
+#     steps:
+#       - run: echo "${ACTOR}"
+
+# 複数のワークフローでパスワードなどの機密情報を使いたい場合はsercret.〇〇で取得可能。variantsはvars.〇〇で取得可能
+# name: variablees
+# on: push
+# jobs:
+#   print:
+#     runs-on: ubuntu-latest
+#     env:
+#       USERNAME: "${{sercret.USERNAME}}"
+#     steps:
+#       - run: echo "${PASSWORD}"
+#       - run: echo "${PASSWORD:0:1} ${PASSWORD}#?"
+
+
+
+# ワークフロー名を動的に出力
 name: Hello                         # ワークフロー名
 on: push                            # イベント(プッシュ時に起動)
+run-name: Run by @${{ github.actor }} # Run by 〇〇で実行者の名前を動的に表示
 jobs:                               # ジョブの定義
   hello:                            # ジョブID
     runs-on: ubuntu-latest          # ランナー(ubuntuで実行します)
     steps:                          # ステップの定義
       - run: echo "Hello World!"    # シェルコマンドの実行
-      - uses: actions/checkout@v4   # アクションの呼び出し
+      - uses: actions/checkout@v4   # アクションの呼び出し$?
